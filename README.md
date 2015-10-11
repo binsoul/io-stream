@@ -1,4 +1,4 @@
-# net
+# io-stream
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -24,9 +24,9 @@ $ composer test
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/binsoul/net.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/binsoul/io-stream.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/binsoul/net.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/binsoul/io-stream.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/binsoul/net
-[link-downloads]: https://packagist.org/packages/binsoul/net
+[link-packagist]: https://packagist.org/packages/binsoul/io-stream
+[link-downloads]: https://packagist.org/packages/binsoul/io-stream
