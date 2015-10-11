@@ -1,0 +1,36 @@
+<?php
+
+namespace BinSoul\Test\IO\Stream\Type;
+
+use BinSoul\IO\Stream\AccessMode;
+use BinSoul\IO\Stream\Type\ResourceStream;
+use BinSoul\Test\IO\Stream\AbstractStreamTest;
+
+class ResourceStreamTest extends AbstractStreamTest
+{
+    protected function getStreamName()
+    {
+        return 'php://memory';
+    }
+
+    protected function buildStream()
+    {
+        return new ResourceStream($this->getStreamName());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function test_open_invalid_resource()
+    {
+        $stream = new ResourceStream('abc://abc');
+        $stream->open(new AccessMode('w+'));
+    }
+
+    public function test_detach_returns_resource()
+    {
+        $stream = $this->buildStream();
+        $stream->open(new AccessMode('w+'));
+        $this->assertInternalType('resource', $stream->detach());
+    }
+}
