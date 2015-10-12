@@ -8,11 +8,6 @@ use BinSoul\IO\Stream\AccessMode;
 abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return string
-     */
-    abstract protected function getStreamName();
-
-    /**
      * @return Stream
      */
     abstract protected function buildStream();

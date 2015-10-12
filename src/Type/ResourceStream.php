@@ -185,7 +185,7 @@ class ResourceStream implements Stream
 
         $metadata = stream_get_meta_data($this->handle);
         if (!array_key_exists($key, $metadata)) {
-            return;
+            return null;
         }
 
         return $metadata[$key];

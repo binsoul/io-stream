@@ -8,14 +8,9 @@ use BinSoul\Test\IO\Stream\AbstractStreamTest;
 
 class ResourceStreamTest extends AbstractStreamTest
 {
-    protected function getStreamName()
-    {
-        return 'php://memory';
-    }
-
     protected function buildStream()
     {
-        return new ResourceStream($this->getStreamName());
+        return new ResourceStream('php://memory');
     }
 
     /**

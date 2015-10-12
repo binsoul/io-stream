@@ -10,14 +10,9 @@ use BinSoul\Test\IO\Stream\AbstractStreamTest;
 
 class BufferedWriterTest extends AbstractStreamTest
 {
-    protected function getStreamName()
-    {
-        return 'file';
-    }
-
     protected function buildStream()
     {
-        return new BufferedWriter(new MemoryStream($this->getStreamName()), 1000);
+        return new BufferedWriter(new MemoryStream(), 1000);
     }
 
     public function test_writes_flush_buffer()

@@ -18,13 +18,8 @@ class StreamDecoratorImplementation
 
 class StreamDecoratorTest extends AbstractStreamTest
 {
-    protected function getStreamName()
-    {
-        return 'file';
-    }
-
     protected function buildStream()
     {
-        return new StreamDecoratorImplementation(new MemoryStream($this->getStreamName()));
+        return new StreamDecoratorImplementation(new MemoryStream());
     }
 }

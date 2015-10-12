@@ -10,8 +10,6 @@ use BinSoul\IO\Stream\Stream;
  */
 class MemoryStream implements Stream
 {
-    /** @var string */
-    private $name;
     /** @var AccessMode */
     private $mode;
     /** @var string */
@@ -28,11 +26,11 @@ class MemoryStream implements Stream
     /**
      * Constructs an instance of this class.
      *
-     * @param string $name name of the stream
+     * @param string $content content of the stream
      */
-    public function __construct($name)
+    public function __construct($content = '')
     {
-        $this->name = $name;
+        $this->content = $content;
     }
 
     /**
@@ -43,21 +41,27 @@ class MemoryStream implements Stream
     private function assertOpen()
     {
         if (!$this->isOpen) {
-            throw new \LogicException(sprintf('The stream "%s" is not open.', $this->name));
+            throw new \LogicException('The stream is not open.');
         }
     }
 
     public function open(AccessMode $mode)
     {
         if ($this->isOpen) {
-            throw new \LogicException(sprintf('The stream "%s" is already open.', $this->name));
+            throw new \LogicException('The stream is already open.');
         }
 
         $this->mode = $mode;
-        $this->content = '';
+        if ($this->mode->impliesExistingContentDeletion()) {
+            $this->content = '';
+        }
 
-        $this->size = 0;
+        $this->size = $this->length($this->content);
+
         $this->position = 0;
+        if ($this->mode->impliesPositioningCursorAtTheEnd()) {
+            $this->position = $this->size;
+        }
 
         $this->isOpen = true;
 
@@ -75,11 +79,11 @@ class MemoryStream implements Stream
     public function read($numberOfBytes)
     {
         if (!$this->isReadable()) {
-            throw new \LogicException(sprintf('The stream "%s" is not readable.', $this->name));
+            throw new \LogicException('The stream is not readable.');
         }
 
         $chunk = substr($this->content, $this->position, $numberOfBytes);
-        $this->position += strlen($chunk);
+        $this->position += $this->length($chunk);
 
         return $chunk;
     }
@@ -87,10 +91,10 @@ class MemoryStream implements Stream
     public function write($data)
     {
         if (!$this->isWritable()) {
-            throw new \LogicException(sprintf('The stream "%s" is not writable.', $this->name));
+            throw new \LogicException('The stream is not writable.');
         }
 
-        $bytesWritten = strlen($data);
+        $bytesWritten = $this->length($data);
 
         $newPosition = $this->position + $bytesWritten;
         $newSize = $newPosition > $this->size ? $newPosition : $this->size;
@@ -98,7 +102,7 @@ class MemoryStream implements Stream
         if ($this->isEof()) {
             $this->size += $bytesWritten;
             if ($this->position > 0 && $this->content == '') {
-                $data = str_pad($data, $this->position + strlen($data), chr(0), STR_PAD_LEFT);
+                $data = str_pad($data, $this->position + $this->length($data), chr(0), STR_PAD_LEFT);
             }
 
             $this->content .= $data;
@@ -118,7 +122,7 @@ class MemoryStream implements Stream
     public function seek($offset, $whence = SEEK_SET)
     {
         if (!$this->isSeekable()) {
-            throw new \LogicException(sprintf('The stream "%s" is not seekable.', $this->name));
+            throw new \LogicException('The stream is not seekable.');
         }
 
         switch ($whence) {
@@ -226,7 +230,7 @@ class MemoryStream implements Stream
             'wrapper_data' => null,
             'mode' => $this->mode->getMode(),
             'seekable' => true,
-            'uri' => $this->name,
+            'uri' => 'binsoul://memory',
         ];
 
         if ($key === null) {
@@ -234,7 +238,7 @@ class MemoryStream implements Stream
         }
 
         if (!array_key_exists($key, $meta)) {
-            return;
+            return null;
         }
 
         return $meta[$key];
@@ -246,5 +250,24 @@ class MemoryStream implements Stream
         $this->close();
 
         return;
+    }
+
+    /**
+     * Returns the number of bytes of the given string.
+     *
+     * If mbstring function overloading is enabled strlen could return the number of characters
+     * instead of the number of bytes. In this case mb_strlen with the encoding "8bit" is used.
+     *
+     * @param string $string
+     *
+     * @return int
+     */
+    private function length($string)
+    {
+        if (function_exists('mb_strlen')) {
+            return mb_strlen($string, '8bit');
+        } else {
+            return strlen($string);
+        }
     }
 }
