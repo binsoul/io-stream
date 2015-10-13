@@ -3,13 +3,16 @@
 namespace BinSoul\IO\Stream\Type;
 
 use BinSoul\IO\Stream\AccessMode;
+use BinSoul\IO\Stream\ByteManipulator;
 use BinSoul\IO\Stream\Stream;
 
 /**
- * Provides an in-memory stream.
+ * Stores data in a memory buffer.
  */
 class MemoryStream implements Stream
 {
+    use ByteManipulator;
+
     /** @var AccessMode */
     private $mode;
     /** @var string */
@@ -33,18 +36,6 @@ class MemoryStream implements Stream
         $this->content = $content;
     }
 
-    /**
-     * Asserts that the stream is open.
-     *
-     * @throws \LogicException
-     */
-    private function assertOpen()
-    {
-        if (!$this->isOpen) {
-            throw new \LogicException('The stream is not open.');
-        }
-    }
-
     public function open(AccessMode $mode)
     {
         if ($this->isOpen) {
@@ -56,7 +47,7 @@ class MemoryStream implements Stream
             $this->content = '';
         }
 
-        $this->size = $this->length($this->content);
+        $this->size = $this->numberOfBytes($this->content);
 
         $this->position = 0;
         if ($this->mode->impliesPositioningCursorAtTheEnd()) {
@@ -82,8 +73,8 @@ class MemoryStream implements Stream
             throw new \LogicException('The stream is not readable.');
         }
 
-        $chunk = substr($this->content, $this->position, $numberOfBytes);
-        $this->position += $this->length($chunk);
+        $chunk = $this->subBytes($this->content, $this->position, $numberOfBytes);
+        $this->position += $this->numberOfBytes($chunk);
 
         return $chunk;
     }
@@ -94,7 +85,7 @@ class MemoryStream implements Stream
             throw new \LogicException('The stream is not writable.');
         }
 
-        $bytesWritten = $this->length($data);
+        $bytesWritten = $this->numberOfBytes($data);
 
         $newPosition = $this->position + $bytesWritten;
         $newSize = $newPosition > $this->size ? $newPosition : $this->size;
@@ -102,13 +93,13 @@ class MemoryStream implements Stream
         if ($this->isEof()) {
             $this->size += $bytesWritten;
             if ($this->position > 0 && $this->content == '') {
-                $data = str_pad($data, $this->position + $this->length($data), chr(0), STR_PAD_LEFT);
+                $data = str_pad($data, $this->position + $this->numberOfBytes($data), chr(0), STR_PAD_LEFT);
             }
 
             $this->content .= $data;
         } else {
-            $before = substr($this->content, 0, $this->position);
-            $after = $newSize > $newPosition ? substr($this->content, $newPosition) : '';
+            $before = $this->subBytes($this->content, 0, $this->position);
+            $after = $newSize > $newPosition ? $this->subBytes($this->content, $newPosition) : '';
             $this->content = $before.$data.$after;
         }
 
@@ -238,7 +229,7 @@ class MemoryStream implements Stream
         }
 
         if (!array_key_exists($key, $meta)) {
-            return null;
+            return;
         }
 
         return $meta[$key];
@@ -246,28 +237,20 @@ class MemoryStream implements Stream
 
     public function detach()
     {
-        $this->assertOpen();
         $this->close();
 
         return;
     }
 
     /**
-     * Returns the number of bytes of the given string.
+     * Asserts that the stream is open.
      *
-     * If mbstring function overloading is enabled strlen could return the number of characters
-     * instead of the number of bytes. In this case mb_strlen with the encoding "8bit" is used.
-     *
-     * @param string $string
-     *
-     * @return int
+     * @throws \LogicException
      */
-    private function length($string)
+    private function assertOpen()
     {
-        if (function_exists('mb_strlen')) {
-            return mb_strlen($string, '8bit');
-        } else {
-            return strlen($string);
+        if (!$this->isOpen) {
+            throw new \LogicException('The stream is not open.');
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace BinSoul\IO\Stream\Decorator;
 
+use BinSoul\IO\Stream\ByteManipulator;
 use BinSoul\IO\Stream\StreamDecorator;
 use BinSoul\IO\Stream\Stream;
 
@@ -11,6 +12,7 @@ use BinSoul\IO\Stream\Stream;
 class BufferedWriter implements Stream
 {
     use StreamDecorator;
+    use ByteManipulator;
 
     /** @var int */
     private $bufferSize;
@@ -49,13 +51,13 @@ class BufferedWriter implements Stream
             throw new \LogicException('The decorated stream is not writable.');
         }
 
-        $dataLength = strlen($data);
+        $dataLength = $this->numberOfBytes($data);
         if ($dataLength > $this->bufferSize) {
             $this->flushBuffer();
             $dataLength = $this->decoratedStream->write($data);
         } else {
             $this->buffer .= $data;
-            if (strlen($this->buffer) > $this->bufferSize) {
+            if ($this->numberOfBytes($this->buffer) > $this->bufferSize) {
                 $this->flushBuffer();
             }
         }
@@ -124,7 +126,7 @@ class BufferedWriter implements Stream
      */
     private function flushBuffer()
     {
-        $bufferLength = strlen($this->buffer);
+        $bufferLength = $this->numberOfBytes($this->buffer);
         if ($bufferLength == 0) {
             return;
         }
