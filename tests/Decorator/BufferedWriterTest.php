@@ -6,9 +6,9 @@ use BinSoul\IO\Stream\AccessMode;
 use BinSoul\IO\Stream\Decorator\BufferedWriter;
 use BinSoul\IO\Stream\Stream;
 use BinSoul\IO\Stream\Type\MemoryStream;
-use BinSoul\Test\IO\Stream\AbstractStreamTest;
+use BinSoul\Test\IO\Stream\ReadWriteStreamTest;
 
-class BufferedWriterTest extends AbstractStreamTest
+class BufferedWriterTest extends ReadWriteStreamTest
 {
     protected function buildStream()
     {

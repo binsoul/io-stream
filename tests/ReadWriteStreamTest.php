@@ -2,16 +2,10 @@
 
 namespace BinSoul\Test\IO\Stream;
 
-use BinSoul\IO\Stream\Stream;
 use BinSoul\IO\Stream\AccessMode;
 
-abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
+abstract class ReadWriteStreamTest extends MinimalStreamTest
 {
-    /**
-     * @return Stream
-     */
-    abstract protected function buildStream();
-
     public function test_open_is_successfull()
     {
         $stream = $this->buildStream();
@@ -25,29 +19,10 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stream->isWritable());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_open_throws_exception_if_already_open()
-    {
-        $stream = $this->buildStream();
-        $stream->open(new AccessMode('w'));
-        $stream->open(new AccessMode('r'));
-    }
-
     public function test_close_is_successful()
     {
         $stream = $this->buildStream();
         $stream->open(new AccessMode('r'));
-        $stream->close();
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_close_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
         $stream->close();
     }
 
@@ -57,17 +32,7 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $stream->open(new AccessMode('r+'));
         $stream->write('abc');
         $stream->seek(0);
-
         $this->assertSame('abc', $stream->read(3));
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_read_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->read(3);
     }
 
     /**
@@ -113,15 +78,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \LogicException
      */
-    public function test_write_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->write('abc');
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
     public function test_write_throws_exception_if_not_writeable()
     {
         $stream = $this->buildStream();
@@ -148,15 +104,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($stream->seek(0, 123456));
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_seek_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->seek(0);
-    }
-
     public function test_tell_returns_correct_position()
     {
         $stream = $this->buildStream();
@@ -179,15 +126,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stream->flush());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_flush_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->flush();
-    }
-
     public function test_eof_works()
     {
         $stream = $this->buildStream();
@@ -199,15 +137,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
             $stream->isEof();
             $this->assertTrue(true);
         }
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_eof_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->isEof();
     }
 
     public function test_stat_returns_correct_values()
@@ -253,15 +182,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_size_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->getSize();
-    }
-
     public function test_isReadable_uses_mode()
     {
         $stream = $this->buildStream();
@@ -271,15 +191,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $stream = $this->buildStream();
         $stream->open(new AccessMode('w'));
         $this->assertFalse($stream->isReadable());
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_isReadable_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->isReadable();
     }
 
     public function test_isWriteable_uses_mode()
@@ -293,29 +204,11 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($stream->isWritable());
     }
 
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_isWritable_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->isWritable();
-    }
-
     public function test_isSeekable_returns_true()
     {
         $stream = $this->buildStream();
         $stream->open(new AccessMode('r'));
         $this->assertTrue($stream->isSeekable());
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_isSeekable_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->isSeekable();
     }
 
     public function test_getMetadata_returns_correct_values()
@@ -347,15 +240,6 @@ abstract class AbstractStreamTest extends \PHPUnit_Framework_TestCase
         $stream->seek(0);
         $meta = $stream->getMetadata();
         $this->assertFalse($meta['eof']);
-    }
-
-    /**
-     * @expectedException \LogicException
-     */
-    public function test_getMetadata_throws_exception_if_not_open()
-    {
-        $stream = $this->buildStream();
-        $stream->getMetadata();
     }
 
     public function test_getMetadata_returns_null_for_unknown_key()

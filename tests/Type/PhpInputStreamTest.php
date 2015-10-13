@@ -18,6 +18,7 @@ class PhpInputStreamTest extends \PHPUnit_Framework_TestCase
     {
         $stream = new PhpInputStream();
         $stream->open(new AccessMode('r'));
+        $this->assertTrue($stream->isReadable());
         $this->assertFalse($stream->isWritable());
     }
 

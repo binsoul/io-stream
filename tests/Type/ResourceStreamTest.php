@@ -4,9 +4,9 @@ namespace BinSoul\Test\IO\Stream\Type;
 
 use BinSoul\IO\Stream\AccessMode;
 use BinSoul\IO\Stream\Type\ResourceStream;
-use BinSoul\Test\IO\Stream\AbstractStreamTest;
+use BinSoul\Test\IO\Stream\ReadWriteStreamTest;
 
-class ResourceStreamTest extends AbstractStreamTest
+class ResourceStreamTest extends ReadWriteStreamTest
 {
     protected function buildStream()
     {

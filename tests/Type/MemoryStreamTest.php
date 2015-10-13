@@ -4,9 +4,9 @@ namespace BinSoul\Test\IO\Stream\Type;
 
 use BinSoul\IO\Stream\AccessMode;
 use BinSoul\IO\Stream\Type\MemoryStream;
-use BinSoul\Test\IO\Stream\AbstractStreamTest;
+use BinSoul\Test\IO\Stream\ReadWriteStreamTest;
 
-class MemoryStreamTest extends AbstractStreamTest
+class MemoryStreamTest extends ReadWriteStreamTest
 {
     protected function buildStream()
     {
@@ -27,7 +27,8 @@ class MemoryStreamTest extends AbstractStreamTest
         $this->assertEquals('foobar', $stream->read(6));
     }
 
-    public function test_clears_content_if_mode_implies_deletion() {
+    public function test_clears_content_if_mode_implies_deletion()
+    {
         $stream = new MemoryStream('foobar');
         $stream->open(new AccessMode('w+'));
         $this->assertEquals(0, $stream->tell());

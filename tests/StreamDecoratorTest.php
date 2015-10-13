@@ -1,10 +1,9 @@
 <?php
 
-namespace BinSoul\Test\IO\Stream\Type;
+namespace BinSoul\Test\IO\Stream;
 
 use BinSoul\IO\Stream\StreamDecorator;
 use BinSoul\IO\Stream\Type\MemoryStream;
-use BinSoul\Test\IO\Stream\AbstractStreamTest;
 
 class StreamDecoratorImplementation
 {
@@ -16,7 +15,7 @@ class StreamDecoratorImplementation
     }
 }
 
-class StreamDecoratorTest extends AbstractStreamTest
+class StreamDecoratorTest extends ReadWriteStreamTest
 {
     protected function buildStream()
     {
