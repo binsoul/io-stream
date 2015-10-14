@@ -166,6 +166,13 @@ class NullStream implements Stream
         return;
     }
 
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576)
+    {
+        $this->assertOpen();
+
+        return true;
+    }
+
     /**
      * Asserts that the stream is open.
      *

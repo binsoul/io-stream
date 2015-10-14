@@ -3,6 +3,7 @@
 namespace BinSoul\Test\IO\Stream;
 
 use BinSoul\IO\Stream\AccessMode;
+use BinSoul\IO\Stream\Stream;
 
 abstract class ReadWriteStreamTest extends MinimalStreamTest
 {
@@ -268,5 +269,30 @@ abstract class ReadWriteStreamTest extends MinimalStreamTest
         $stream->open(new AccessMode('w+'));
         $stream->detach();
         $stream->isWritable();
+    }
+
+    public function test_appendTo_writes_to_given_stream()
+    {
+        $sourceStream = $this->buildStream();
+        $sourceStream->open(new AccessMode('r+'));
+        $sourceStream->write('abc');
+
+        $targetStream = $this->getMock(Stream::class);
+        $targetStream->expects($this->any())->method('write')->with('abc');
+
+        $sourceStream->appendTo($targetStream);
+    }
+
+    public function test_appendTo_buffers_1mb()
+    {
+        $content = str_repeat('x', 10);
+        $sourceStream = $this->buildStream();
+        $sourceStream->open(new AccessMode('r+'));
+        $sourceStream->write($content.'o');
+
+        $targetStream = $this->getMock(Stream::class);
+        $targetStream->expects($this->atLeast(1))->method('write');
+
+        $sourceStream->appendTo($targetStream, 10);
     }
 }

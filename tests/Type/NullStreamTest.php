@@ -105,4 +105,11 @@ class NullStreamTest extends MinimalStreamTest
         $stream->open(new AccessMode('w+'));
         $this->assertNull($stream->detach());
     }
+
+    public function test_appendTo_returns_true()
+    {
+        $stream = $this->buildStream();
+        $stream->open(new AccessMode('w+'));
+        $this->assertTrue($stream->appendTo($stream));
+    }
 }

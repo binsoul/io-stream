@@ -2,10 +2,11 @@
 
 namespace BinSoul\Test\IO\Stream;
 
+use BinSoul\IO\Stream\Stream;
 use BinSoul\IO\Stream\StreamDecorator;
 use BinSoul\IO\Stream\Type\MemoryStream;
 
-class StreamDecoratorImplementation
+class StreamDecoratorImplementation implements Stream
 {
     use StreamDecorator;
 

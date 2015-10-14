@@ -145,4 +145,13 @@ abstract class MinimalStreamTest extends \PHPUnit_Framework_TestCase
         $stream = $this->buildStream();
         $stream->getMetadata();
     }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function test_appendTo_throws_exception_if_not_open()
+    {
+        $stream = $this->buildStream();
+        $stream->appendTo($stream);
+    }
 }

@@ -189,6 +189,34 @@ class ResourceStream implements Stream
         return $handle;
     }
 
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576)
+    {
+        $this->seek(0);
+        $streamSize = $this->getSize();
+
+        if ($streamSize < $maxBufferSize) {
+            $content = $this->read($streamSize);
+            if ($content === false) {
+                return false;
+            }
+
+            $stream->write($content);
+
+            return true;
+        }
+
+        while (!$this->isEof()) {
+            $content = $this->read($maxBufferSize);
+            if ($content === false) {
+                return false;
+            }
+
+            $stream->write($content);
+        }
+
+        return true;
+    }
+
     /**
      * Asserts that the stream is open.
      *

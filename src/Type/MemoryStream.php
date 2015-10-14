@@ -112,9 +112,7 @@ class MemoryStream implements Stream
 
     public function seek($offset, $whence = SEEK_SET)
     {
-        if (!$this->isSeekable()) {
-            throw new \LogicException('The stream is not seekable.');
-        }
+        $this->assertOpen();
 
         switch ($whence) {
             case SEEK_SET:
@@ -240,6 +238,15 @@ class MemoryStream implements Stream
         $this->close();
 
         return;
+    }
+
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576)
+    {
+        $this->assertOpen();
+
+        $stream->write($this->content);
+
+        return true;
     }
 
     /**

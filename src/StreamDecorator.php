@@ -84,4 +84,9 @@ trait StreamDecorator
     {
         return $this->decoratedStream->detach();
     }
+
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576)
+    {
+        return $this->decoratedStream->appendTo($stream, $maxBufferSize);
+    }
 }

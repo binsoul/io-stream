@@ -139,4 +139,14 @@ interface Stream
      * @return resource|null Underlying PHP stream
      */
     public function detach();
+
+    /**
+     * Append all data from this stream to the given stream.
+     *
+     * @param Stream $stream        stream to append to
+     * @param int    $maxBufferSize maximum buffer size in bytes
+     *
+     * @return bool
+     */
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576);
 }

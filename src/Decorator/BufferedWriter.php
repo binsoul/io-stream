@@ -116,7 +116,16 @@ class BufferedWriter implements Stream
 
     public function detach()
     {
+        $this->flushBuffer();
+
         return $this->decoratedStream->detach();
+    }
+
+    public function appendTo(Stream $stream, $maxBufferSize = 1048576)
+    {
+        $this->flushBuffer();
+
+        return $this->decoratedStream->appendTo($stream, $maxBufferSize);
     }
 
     /**
