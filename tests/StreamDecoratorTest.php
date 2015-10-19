@@ -9,11 +9,6 @@ use BinSoul\IO\Stream\Type\MemoryStream;
 class StreamDecoratorImplementation implements Stream
 {
     use StreamDecorator;
-
-    public function __construct($decoratedStream)
-    {
-        $this->decoratedStream = $decoratedStream;
-    }
 }
 
 class StreamDecoratorTest extends ReadWriteStreamTest

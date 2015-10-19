@@ -2,91 +2,92 @@
 
 namespace BinSoul\IO\Stream;
 
+use BinSoul\Common\Decorator;
+
 /**
- * Implements the Stream interface and delegates all methods to the decorated stream.
+ * Implements the {@see Stream} interface and delegates all methods to the decorated stream.
  */
 trait StreamDecorator
 {
-    /** @var Stream */
-    protected $decoratedStream;
+    use Decorator;
 
     public function open(AccessMode $mode)
     {
-        return $this->decoratedStream->open($mode);
+        return $this->decoratedObject->open($mode);
     }
 
     public function close()
     {
-        return $this->decoratedStream->close();
+        return $this->decoratedObject->close();
     }
 
     public function read($numberOfBytes)
     {
-        return $this->decoratedStream->read($numberOfBytes);
+        return $this->decoratedObject->read($numberOfBytes);
     }
 
     public function write($data)
     {
-        return $this->decoratedStream->write($data);
+        return $this->decoratedObject->write($data);
     }
 
     public function flush()
     {
-        return $this->decoratedStream->flush();
+        return $this->decoratedObject->flush();
     }
 
     public function seek($offset, $whence = SEEK_SET)
     {
-        return $this->decoratedStream->seek($offset, $whence);
+        return $this->decoratedObject->seek($offset, $whence);
     }
 
     public function tell()
     {
-        return $this->decoratedStream->tell();
+        return $this->decoratedObject->tell();
     }
 
     public function isEof()
     {
-        return $this->decoratedStream->isEof();
+        return $this->decoratedObject->isEof();
     }
 
     public function isReadable()
     {
-        return $this->decoratedStream->isReadable();
+        return $this->decoratedObject->isReadable();
     }
 
     public function isWritable()
     {
-        return $this->decoratedStream->isWritable();
+        return $this->decoratedObject->isWritable();
     }
 
     public function isSeekable()
     {
-        return $this->decoratedStream->isSeekable();
+        return $this->decoratedObject->isSeekable();
     }
 
     public function getSize()
     {
-        return $this->decoratedStream->getSize();
+        return $this->decoratedObject->getSize();
     }
 
     public function getStatistics()
     {
-        return $this->decoratedStream->getStatistics();
+        return $this->decoratedObject->getStatistics();
     }
 
     public function getMetadata($key = null)
     {
-        return $this->decoratedStream->getMetadata($key);
+        return $this->decoratedObject->getMetadata($key);
     }
 
     public function detach()
     {
-        return $this->decoratedStream->detach();
+        return $this->decoratedObject->detach();
     }
 
     public function appendTo(Stream $stream, $maxBufferSize = 1048576)
     {
-        return $this->decoratedStream->appendTo($stream, $maxBufferSize);
+        return $this->decoratedObject->appendTo($stream, $maxBufferSize);
     }
 }

@@ -27,7 +27,7 @@ class BufferedWriter implements Stream
      */
     public function __construct(Stream $decoratedStream, $bufferSize)
     {
-        $this->decoratedStream = $decoratedStream;
+        $this->decoratedObject = $decoratedStream;
         $this->bufferSize = $bufferSize;
     }
 
@@ -35,14 +35,14 @@ class BufferedWriter implements Stream
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->close();
+        return $this->decoratedObject->close();
     }
 
     public function read($numberOfBytes)
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->read($numberOfBytes);
+        return $this->decoratedObject->read($numberOfBytes);
     }
 
     public function write($data)
@@ -54,7 +54,7 @@ class BufferedWriter implements Stream
         $dataLength = $this->numberOfBytes($data);
         if ($dataLength > $this->bufferSize) {
             $this->flushBuffer();
-            $dataLength = $this->decoratedStream->write($data);
+            $dataLength = $this->decoratedObject->write($data);
         } else {
             $this->buffer .= $data;
             if ($this->numberOfBytes($this->buffer) > $this->bufferSize) {
@@ -69,63 +69,63 @@ class BufferedWriter implements Stream
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->flush();
+        return $this->decoratedObject->flush();
     }
 
     public function seek($offset, $whence = SEEK_SET)
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->seek($offset, $whence);
+        return $this->decoratedObject->seek($offset, $whence);
     }
 
     public function tell()
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->tell();
+        return $this->decoratedObject->tell();
     }
 
     public function isEof()
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->isEof();
+        return $this->decoratedObject->isEof();
     }
 
     public function getSize()
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->getSize();
+        return $this->decoratedObject->getSize();
     }
 
     public function getStatistics()
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->getStatistics();
+        return $this->decoratedObject->getStatistics();
     }
 
     public function getMetadata($key = null)
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->getMetadata($key);
+        return $this->decoratedObject->getMetadata($key);
     }
 
     public function detach()
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->detach();
+        return $this->decoratedObject->detach();
     }
 
     public function appendTo(Stream $stream, $maxBufferSize = 1048576)
     {
         $this->flushBuffer();
 
-        return $this->decoratedStream->appendTo($stream, $maxBufferSize);
+        return $this->decoratedObject->appendTo($stream, $maxBufferSize);
     }
 
     /**
@@ -140,7 +140,7 @@ class BufferedWriter implements Stream
             return;
         }
 
-        $bytesWritten = $this->decoratedStream->write($this->buffer);
+        $bytesWritten = $this->decoratedObject->write($this->buffer);
         if ($bytesWritten < $bufferLength) {
             throw new \RuntimeException(
                 sprintf(
